@@ -1,61 +1,85 @@
 'use strict';
 
-var width = 900;
-var height = 600;
-var projection = d3.geo.mercator()
-    .scale(220400)
-    .center([-122.431297, 37.773972])
-    .translate([width / 2, height / 2]);
+function buildMap() {
+    const width = 900;
+    const height = 600;
+    const projection = d3.geo.mercator()
+        .scale(220400)
+        .center([-122.431297, 37.773972])
+        .translate([width / 2, height / 2]);
 
-var path = d3.geoPath(projection);
+    const path = d3.geoPath(projection);
 
-var $map = d3.select('body').append('svg')
-  .attr('width', width)
-  .attr('height', height);
+    const $map = d3.select('.map');
+    // if (localStorage[LOCAL_STORAGE_MAP_KEY]) {
+    //     $map.innerHTML = localStorage.getItem(LOCAL_STORAGE_MAP_KEY);
+    //     return;
+    // }
+    const promises = [];
+    promises.push($.get('arteries.json'));
+    promises.push($.get('neighborhoods.json'));
+    promises.push($.get('streets.json'));
+    promises.push($.get('freeways.json'));
 
-const promises = [];
-promises.push($.get('arteries.json'));
-promises.push($.get('neighborhoods.json'));
-promises.push($.get('streets.json'));
-promises.push($.get('freeways.json'));
+    Promise.all(promises).then(([arteries, neigh, streets, freeways]) => {
+        $map.selectAll('path')
+            .data(neigh.features)
+            .enter()
+            .append('path')
+            .attr('class', 'neighborhoods')
+            .attr('d', path);
+        $map.selectAll('path')
+            .data(freeways.features)
+            .enter()
+            .append('path')
+            .attr('class', 'freeways')
+            .attr('d', path);
+        $map.selectAll('path')
+            .data(arteries.features)
+            .enter()
+            .append('path')
+            .attr('class', 'arteries')
+            .attr('d', path);
 
-Promise.all(promises).then(([arteries, neigh, streets, freeways]) => {
-    $map.selectAll('path')
-        .data(neigh.features)
-        .enter()
-        .append('path')
-        .attr('class', 'neighborhoods')
-        .attr('d', path);
-    $map.selectAll('path')
-        .data(freeways.features)
-        .enter()
-        .append('path')
-        .attr('class', 'freeways')
-        .attr('d', path);
-    $map.selectAll('path')
-        .data(arteries.features)
-        .enter()
-        .append('path')
-        .attr('class', 'arteries')
-        .attr('d', path);
+        $map.selectAll('path')
+            .data(streets.features)
+            .enter()
+            .append('path')
+            .attr('class', 'streets')
+            .attr('d', path);
 
-    $map.selectAll('path')
-        .data(streets.features)
-        .enter()
-        .append('path')
-        .attr('class', 'streets')
-        .attr('d', path);
-});
+            // cache!
+        // setTimeout(() => {
+        //     const map = document.querySelector('.map');
+        //     localStorage.setItem('''', map.innerHTML)
+        //     localStorage.setItem(LOCAL_STORAGE_MAP_KEY, map.innerHTML)
+        //     localStorage.setItem(LOCAL_STORAGE_MAP_KEY, map.innerHTML)
+        // }, 2000);
+    });
+}
 
-// d3.json('arteries.json', function(error, sf) {
+function buildOptions() {
+    $.get('routes').then((d) => {
+        console.log(d);
+    });
+}
 
-// });
+function renderVehicleLocations() {
 
-d3.json('freeways.json', function(error, sf) {
-});
+    const query = {r: '24'};
 
-// d3.json('neighborhoods.json', function(error, sf) {
-// });
+    $.get('locations', query).then((d) => {
+        console.log(d);
+    });
+}
 
-// d3.json('streets.json', function(error, sf) {
-// });
+
+
+
+function main() {
+    buildOptions();
+    buildMap();
+    renderVehicleLocations();
+}
+
+main();
