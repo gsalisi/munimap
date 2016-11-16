@@ -1,0 +1,17 @@
+{
+  "name": "munimap",
+  "version": "1.0.0",
+  "description": "SF Map that shows locations of muni buses and trains",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Geoffrey Salisi",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}

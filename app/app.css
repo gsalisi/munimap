@@ -1,0 +1,29 @@
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.arteries {
+    stroke: #474143;
+    stroke-width: 2px;
+}
+
+.neighborhoods {
+    stroke: #474143;
+    fill: #E7E8E7;
+    stroke-width: 1px;
+}
+
+.streets {
+    stroke: rgba(166, 158, 157, 0.5);
+    stroke-width: 1px;
+    fill: rgba(0, 0, 0, 0.01);
+}
+
+.freeways {
+    stroke: #474143;
+    stroke-width: 1px;
+    fill: rgba(0, 0, 0, 0.01);
+}
