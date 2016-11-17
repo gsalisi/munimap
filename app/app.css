@@ -3,11 +3,31 @@ body {
     display: flex;
     justify-content: center;
     flex-direction: column;
+    position: relative;
 }
 
-.map {
-    // width: 100%;
-    // height: 100%;
+.map-container,
+.overlay-container,
+.controls-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.map-container {
+    z-index: 10;
+}
+
+.overlay-container {
+    z-index: 20;
+}
+
+.controls-container {
+    z-index: 30;
+}
+
+.map,
+.overlay {
     min-width: 1200px;
     min-height: 900px;
 }
@@ -33,6 +53,12 @@ body {
     stroke: #474143;
     stroke-width: 1px;
     fill: rgba(0, 0, 0, 0.01);
+}
+
+.routepath {
+    fill: rgba(0, 0, 0, 0);
+    stroke-width: 4px;
+    stroke: #0E475E;
 }
 
 .vehicles {

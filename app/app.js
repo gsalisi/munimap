@@ -26,7 +26,17 @@ class DataService {
             } else {
                 return response.json();
             }
-        });
+        }).then((data) => DataService._normalizeVehicles(data));
+    }
+
+    static _normalizeVehicles(vehicleLocationsResp) {
+        if (!vehicleLocationsResp.body || !vehicleLocationsResp.body.vehicle) {
+            return;
+        } else if (!Array.isArray(vehicleLocationsResp.body.vehicle)) {
+            const v = vehicleLocationsResp.body.vehicle;
+            return [v];
+        }
+        return vehicleLocationsResp.body.vehicle;
     }
 
     static fetchRouteConfig(vehicleTag) {
@@ -36,7 +46,7 @@ class DataService {
             } else {
                 return response.json();
             }
-        });
+        }).then((route) => route.body && route.body.route);
     }
 }
 
@@ -44,61 +54,78 @@ class SFMap {
     constructor(mapData, sessionData) {
         this.projection = d3.geo.mercator();
         this.svg = d3.select('.map');
+        this.overlay = d3.select('.overlay');
+        this.geoPath = d3.geoPath(this.projection);
+        const width = 1200;
+        const height = 900;
+        this.projection.scale(331400)
+            .center([-122.431297, 37.773972])
+            .translate([width / 2, height / 2]);
         this._renderMap(mapData);
     }
 
     _renderMap([arteries, neigh, streets, freeways]) {
-        const width = 1200;
-        const height = 900;
-
-        this.projection.scale(331400)
-            .center([-122.431297, 37.773972])
-            .translate([width / 2, height / 2]);
-        const path = d3.geoPath(this.projection);
-
         this.svg.selectAll('path')
             .data(neigh.features)
             .enter()
             .append('path')
             .attr('class', 'neighborhoods')
-            .attr('d', path);
+            .attr('d', this.geoPath);
         this.svg.selectAll('path')
             .data(freeways.features)
             .enter()
             .append('path')
             .attr('class', 'freeways')
-            .attr('d', path);
+            .attr('d', this.geoPath);
         this.svg.selectAll('path')
             .data(arteries.features)
             .enter()
             .append('path')
             .attr('class', 'arteries')
-            .attr('d', path);
-
+            .attr('d', this.geoPath);
         this.svg.selectAll('path')
             .data(streets.features)
             .enter()
             .append('path')
             .attr('class', 'streets')
-            .attr('d', path);
+            .attr('d', this.geoPath);
     }
 
     renderVehicles(vehicles) {
-        this.svg.selectAll('.vehicle').remove();
-        this.svg.selectAll("circle")
+        this.overlay.selectAll('.vehicle').remove();
+        this.overlay.selectAll('circle')
             .data(vehicles)
             .enter()
-            .append("circle")
-            .attr("cx", d => this.projection([d.lon, d.lat])[0])
-            .attr("cy",  d => this.projection([d.lon, d.lat])[1])
-            .attr("id", d => d.id)
-            .attr("r", "6px")
-            .attr("fill", "red")
-            .attr("class", "vehicle");
+            .append('circle')
+            .attr('cx', d => this.projection([d.lon, d.lat])[0])
+            .attr('cy',  d => this.projection([d.lon, d.lat])[1])
+            .attr('id', d => d.id)
+            .attr('r', '8px')
+            .attr('fill', '#FFE3AE')
+            .attr('stroke', '#A86F41')
+            .attr('stroke-width', '2px')
+            .attr('class', 'vehicle');
     }
 
     renderRoute(route) {
-
+        function toGeoJson(points) {
+            return points.map(obj => {
+                return {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: obj.point.map(p => [p.lon, p.lat, 0])
+                    }
+                };
+            });
+        }
+        const routeData = toGeoJson(route.path);
+        this.overlay.selectAll('path')
+            .data(routeData)
+            .enter()
+            .append('path')
+            .attr('class', 'routepath')
+            .attr('d', this.geoPath);
     }
 }
 
@@ -110,15 +137,7 @@ class MapSession {
 }
 
 class MapUtil {
-    normalizeVehicles(vehicleLocationsResp) {
-        if (!vehicleLocationsResp.body && !vehicleLocationsResp.body.vehicle) {
-            return;
-        } else if (!Array.isArray(vehicleLocationsResp.body.vehicle)) {
-            const v = vehicleLocationsResp.body.vehicle;
-            return [v];
-        }
-        return vehicleLocationsResp.body.vehicle;
-    }
+
 }
 
 function main() {
@@ -132,22 +151,21 @@ function main() {
         sfMap = new SFMap(mapData);
     });
 
-    mapPromise.then(() => updateVehicleLocations());
-    mapPromise.then(() => DataService.fetchRouteConfig(vehicleTag));
+    mapPromise.then(() => DataService.fetchRouteConfig(vehicleTag))
+        .then((routeData) => sfMap.renderRoute(routeData))
+        .then(() => updateVehicleLocations());
 
-    const startMapRefresh = function() {
+    const autoRefresh = function() {
         setTimeout(() => {
             setInterval(() => {
                 updateVehicleLocations();
             }, 2000);
         }, 5000);
     }
-
-    // startMapRefresh();
+    autoRefresh();
 
     function updateVehicleLocations() {
-         DataService.fetchVehicleLocations(vehicleTag).then(vehicleLocationsResp => {
-            const vehicles = mapUtil.normalizeVehicles(vehicleLocationsResp);
+        return DataService.fetchVehicleLocations(vehicleTag).then(vehicles => {
             if (vehicles) {
                 vehicles.forEach((v) => vehicleMap.set(v.id, v));
                 const newValues = [];
