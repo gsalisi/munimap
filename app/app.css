@@ -34,3 +34,7 @@ body {
     stroke-width: 1px;
     fill: rgba(0, 0, 0, 0.01);
 }
+
+.vehicles {
+    fill: red;
+}
