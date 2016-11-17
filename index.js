@@ -18,21 +18,59 @@ app.get('/', (req, res) => {
 });
 
 app.get('/locations', (req, res) => {
-    const query = {};
-    const routeQuery = {
+    const queryObj = {
         command: 'vehicleLocations',
-        t: (new Date()).getTime().toString()
+        t: ((new Date()).getTime()-10000).toString()
     };
-    Object.assign(query, NEXTBUS_PARAM_DEFAULT, routeQuery, req.query)
-    console.log(`${NEXTBUS_API}${querystring.stringify(query)}`);
-    request.get(`${NEXTBUS_API}${querystring.stringify(query)}`, (a, b, d) => {
-        console.log(d);
-        res.send(xml2json.toJson(d));
+    Object.assign(queryObj, NEXTBUS_PARAM_DEFAULT, req.query);
+    console.log(queryObj);
+    request.get({
+        url: NEXTBUS_API,
+        qs: queryObj,
+        useQuerystring: true
+    }, (err, r, body) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(xml2json.toJson(body));
+        }
     });
 });
 
 app.get('/routes', (req, res) => {
-    res.send('test');
+    const queryObj = {
+        command: 'routeList',
+    };
+    Object.assign(queryObj, NEXTBUS_PARAM_DEFAULT);
+    request.get({
+        url: NEXTBUS_API,
+        qs: queryObj,
+        useQuerystring: true
+    }, (err, r, body) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(xml2json.toJson(body));
+        }
+    });
+})
+
+app.get('/routeConfig', (req, res) => {
+    const queryObj = {
+        command: 'routeConfig',
+    };
+    Object.assign(queryObj, NEXTBUS_PARAM_DEFAULT, req.query);
+    request.get({
+        url: NEXTBUS_API,
+        qs: queryObj,
+        useQuerystring: true
+    }, (err, r, body) => {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(xml2json.toJson(body));
+        }
+    });
 })
 
 app.listen(app.get('port'),() => {
