@@ -23,7 +23,6 @@ app.get('/locations', (req, res) => {
         t: ((new Date()).getTime()-10000).toString()
     };
     Object.assign(queryObj, NEXTBUS_PARAM_DEFAULT, req.query);
-    console.log(queryObj);
     request.get({
         url: NEXTBUS_API,
         qs: queryObj,
