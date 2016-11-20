@@ -139,8 +139,8 @@ class MapSession {
             this.renderRoute(routeData)
             this.routeColor = routeData.color;
             this.routeColorOpposite = routeData.oppositeColor;
-            this.updateVehicleLocations();
-            // this.intervalID = this.autoRefresh();
+            // this.updateVehicleLocations();
+            this.intervalID = this.autoRefresh();
         });
     }
 
@@ -256,24 +256,14 @@ class MapSession {
 
 }
 
-// class EventListeners {
-//     constructor() {
-//         window.onRouteSelectionChange = this._onRouteSelectionChange;
-//     }
-
-//     _onRouteSelectionChange(checkbox) {
-//         console.log(checkbox.checked);
-//         console.log(checkbox.value);
-//     }
-// }
 
 function setupEventListeners(mapSessions) {
     const sessionSVG = d3.select('.overlay-container')
             .append('svg')
             .attr('class', 'overlay');
 
-    const nms = new MapSession('J', sessionSVG);
-    mapSessions['J'] = nms;
+    // const nms = new MapSession('J', sessionSVG);
+    // mapSessions['J'] = nms;
 
     window.onRouteSelectionChange = (cb) => {
         if (cb.checked) {
