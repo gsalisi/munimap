@@ -6,17 +6,31 @@
 
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://d3js.org/d3-geo.v1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
 </head>
 <body>
     <!-- add a loader -->
-    <div class="map-container">
-        <svg class="map"></svg>
+    <div class="header">
+        <h3>Muni Real-time Bus and Train Locations</h3>
+        <label class="transt-tag-label" for="transit-tag">Choose transits: (Maximum of 6 Selection)</label>
+        <div class="controls-container">
+            <button id="refreshBtn">Refresh</button>
+        </div>
+        <div class="checkbox-container">
+            Loading...
+        </div>
     </div>
-    <div class="overlay-container">
-        <svg class="overlay"></svg>
-    </div>
-    <div class="controls-container">
-        <button id="refreshBtn">Refresh</button>
+    <div class="container">
+        <div class="loader-container">
+            <div class="loader">
+                IZ STILL LOADING PLZ WAIT.
+            </div>
+        </div>
+        <div class="map-container">
+            <svg class="map"></svg>
+        </div>
+        <div class="overlay-container">
+        </div>
     </div>
     <script src="app.js"></script>
 </body>

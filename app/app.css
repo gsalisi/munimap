@@ -1,17 +1,32 @@
 body {
-    font-family: 'Arial', sans-serif;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+    font-family: 'Oswald', sans-serif;
+    height: 100%;
+    width: 100%;
+}
+
+.container {
     position: relative;
+    height:100%;
 }
 
 .map-container,
-.overlay-container,
-.controls-container {
+.overlay-container {
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.loader-container {
+    position: relative;
+    width: 100%;
+    height: 900px;
+}
+.loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
 }
 
 .map-container {
@@ -22,24 +37,21 @@ body {
     z-index: 20;
 }
 
-.controls-container {
-    z-index: 30;
-}
-
 .map,
 .overlay {
     min-width: 1200px;
     min-height: 900px;
+    position: absolute;
 }
 
 .arteries {
-    stroke: #474143;
+    stroke: rgba(71, 65, 67, 0.5);
     stroke-width: 2px;
 }
 
 .neighborhoods {
     stroke: #474143;
-    fill: #E7E8E7;
+    fill: #F1F2E7;
     stroke-width: 1px;
 }
 
@@ -57,10 +69,28 @@ body {
 
 .routepath {
     fill: rgba(0, 0, 0, 0);
-    stroke-width: 4px;
-    stroke: #0E475E;
+    stroke-width: 5px;
+    stroke: rgba(14,71,94,0.5)
 }
 
-.vehicles {
-    fill: red;
+/* Header area styles */
+
+.header {
+    position: relative;
+}
+
+.checkbox-container {
+    position: absolute;
+    bottom: -330px;
+    height: 300px;
+    width: 300px;
+    overflow-y: auto;
+    font-size: 12px;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+.route-item {
+    margin: 3px 0;
 }
