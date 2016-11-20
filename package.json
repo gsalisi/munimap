@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^4.14.0",
     "request": "^2.78.0",
+    "webpack": "^1.13.3",
     "xml2json": "^0.10.0"
   },
   "devDependencies": {
