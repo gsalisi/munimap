@@ -4,6 +4,7 @@
   "description": "SF Map that shows locations of muni buses and trains",
   "main": "index.js",
   "scripts": {
+    "postinstall": "webpack --config ./webpack.config.js --progress --colors",
     "start": "node index.js"
   },
   "author": "Geoffrey Salisi",
@@ -12,5 +13,10 @@
     "express": "^4.14.0",
     "request": "^2.78.0",
     "xml2json": "^0.10.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
+    "babel-preset-latest": "^6.16.0"
   }
 }
