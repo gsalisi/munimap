@@ -67,12 +67,6 @@ body {
     fill: rgba(0, 0, 0, 0.01);
 }
 
-.routepath {
-    fill: rgba(0, 0, 0, 0);
-    stroke-width: 5px;
-    stroke: rgba(14,71,94,0.5)
-}
-
 /* Header area styles */
 
 .header {
@@ -89,8 +83,10 @@ body {
     z-index: 100;
     background-color: rgba(0, 0, 0, 0.1);
     padding: 10px;
+    font-family: 'Open Sans', sans-serif;
+    box-shadow: inset 0px -40px 50px -37px black;
 }
 
 .route-item {
-    margin: 3px 0;
+    line-height: 20px;
 }

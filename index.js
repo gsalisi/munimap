@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 app.get('/locations', (req, res) => {
     const queryObj = {
         command: 'vehicleLocations',
-        t: ((new Date()).getTime()-10000).toString()
+        t: ((new Date()).getTime()-12000).toString()
     };
     Object.assign(queryObj, NEXTBUS_PARAM_DEFAULT, req.query);
     request.get({
